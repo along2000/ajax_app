@@ -1,3 +1,17 @@
+const buildHTML = (XHR) => {
+ const item = XHR.response.post;
+ const html = `
+  <div class="post">
+    <div class="post-date">
+      投稿日時：${item.created_at}
+    </div>
+    <div class="post-content">
+      ${item.content}
+    </div>
+  </div>`;
+ return html;
+};
+
 function post (){
   //リクエストを送信する処理console.log("fire")
  //getElementByIdメソッドで取得した投稿ボタンの要素を変数submitに格納しています。
@@ -14,6 +28,16 @@ function post (){
    // 第一引数にはHTTPメソッド、第二引数にはパス、第三引数には非同期通信であるかをtrueかfalseで記述します。
    XHR.responseType = "json"; //esponseTypeプロパティとは、レスポンスのデータフォーマット（＝どのような形式のデータにするか）を指定するプロパティです。
    XHR.send(formData); //send()メソッドとは、リクエストを送信するメソッドです。XMLHttpRequestオブジェクトのメソッドの一種です。
+   XHR.onload = () => {
+    if (XHR.status != 200) {
+      alert(`Error ${XHR.status}: ${XHR.statusText}`);
+      return null;
+    };
+    const list = document.getElementById("list");
+    const formText = document.getElementById("content");
+    list.insertAdjacentHTML("afterend", buildHTML(XHR));
+    formText.value = "";
+   };
   });
 };
 
